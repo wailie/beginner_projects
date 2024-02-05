@@ -32,7 +32,7 @@ scoreboard = Scoreboard()
 # Game loop
 game_is_on = True
 while game_is_on:
-    time.sleep(0.1)
+    time.sleep(ball.move_speed)
     screen.update()
     ball.move()
 
@@ -60,15 +60,8 @@ while game_is_on:
     player_one_score = scoreboard.player
     player_two_score = scoreboard.opponent
 
-    # Increase the ball's speed when the scores are over 5
-    if player_one_score >= 5 or player_two_score >= 5:
-        ball.move_speed *= 2
-    elif player_one_score >= 8 or player_two_score >= 8:
-        ball.move_speed *= 2
-
     if player_one_score == 10 or player_two_score == 10:
         game_is_on = False
-
 
 #display final winner
 scoreboard.compare_score()
