@@ -5,6 +5,7 @@ from tkinter import *
 window = Tk()
 window.title("Widget Examples")
 window.minsize(width=500, height=300)
+window.config(padx=20, pady=20)
 
 
 #Labels
@@ -143,7 +144,7 @@ def action():
 
 #calls action() when pressed
 button = Button(text="Submit", command=action)
-button.grid(column=2, row=12)
+button.grid(column=3, row=12)
 
 
 window.mainloop()
