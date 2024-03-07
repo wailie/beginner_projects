@@ -12,14 +12,35 @@ window.config(padx=20, pady=20)
 label = Label(font=("Roboto", 20, "bold"))
 label.config(text="Application Form")
 label.grid(column=0, row=0)
+label.config(padx=20, pady=30)
+
 
 student_info = {}
 
-#Entries
+
+#Entry
 entry = Entry(window, width=30, border=1)
-#Add some text to begin with
-entry.insert(END, string="Name - ")
 entry.grid(column=0, row=3)
+
+# Add padding to the text inside the entry widget
+entry.insert(END, "Name - ")
+entry.config(fg="gray")  # Change text color to gray to simulate padding
+
+# Function to handle focus in and focus out events for the entry widget
+def on_entry_focus_in(event):
+    if entry.get() == "Name - ":
+        entry.delete(0, END)
+        entry.config(fg="black")
+
+def on_entry_focus_out(event):
+    if entry.get() == "":
+        entry.insert(END, "Name - ")
+        entry.config(fg="gray")
+
+# Bind focus in and focus out events to entry widget
+entry.bind("<FocusIn>", on_entry_focus_in)
+entry.bind("<FocusOut>", on_entry_focus_out)
+
 
 #Text
 text = Text(height=2, width=30)
@@ -28,6 +49,7 @@ text.focus()
 #Adds some text to begin with.
 text.insert(END, "Why do you want to attend this school? - ")
 text.grid(column=2, row=3)
+text.config(padx=10, pady=10)
 
 
 #label for spinbox
@@ -36,7 +58,7 @@ label2.grid(column=0, row=5)
 #Spinbox
 
 def spinbox_used():
-    return int(spinbox.get())
+    return spinbox.get()
 spinbox = Spinbox(from_=17, to=25, width=5, command=spinbox_used)
 spinbox.grid(column=2, row=5)
 
@@ -44,14 +66,18 @@ spinbox.grid(column=2, row=5)
 #lable for scale
 label3 = Label(font=("Roboto", 10, "normal"), text="Num of Semesters: ")
 label3.grid(column=0, row=7)
+
 #Scale
 #Called with current scale value.
 def scale_used(value):
-    return int(value)
+    return value
+
 scale = Scale(from_=0, to=10, command=scale_used, orient=HORIZONTAL)
 scale.grid(column=2, row=7)
 
+
 yes_or_no = ""
+
 #Checkbutton
 def checkbutton_used():
     global yes_or_no
@@ -60,6 +86,7 @@ def checkbutton_used():
         yes_or_no = "Yes"
     elif checked_state.get() == 0:
         yes_or_no = "No"
+        
 #variable to hold on to checked state, 0 is off, 1 is on.
 checked_state = IntVar()
 checkbutton = Checkbutton(text="Have Paid? (Yes/No)", variable=checked_state, command=checkbutton_used)
@@ -68,6 +95,7 @@ checkbutton.grid(column=0, row=9)
 
 
 fresh_or_tran = ""
+
 #Radiobutton
 def radio_used():
     global fresh_or_tran
@@ -84,6 +112,7 @@ radiobutton1.grid(column=2, row=9)
 radiobutton2.grid(column=2, row=10)
 
 subject = ""
+
 #Listbox
 def listbox_used(event):
     global subject
@@ -94,8 +123,8 @@ listbox = Listbox(height=4, width=40)
 majors = ["Computer Science", "Physics", "Management", "Chinese Language as a Second Language"]
 for major in majors:
     listbox.insert(majors.index(major), major)
-    listbox.bind("<<ListboxSelect>>", listbox_used)
-    listbox.grid(column=0, row=12)
+listbox.bind("<<ListboxSelect>>", listbox_used)
+listbox.grid(column=0, row=12)
 
 
 #Buttons
@@ -106,10 +135,17 @@ def action():
     #Get's current value in textbox at line 1, character 0 remove question
     reason = text.get("1.0", END).replace("Why do you want to attend this school? - ", "")
     reason = reason.replace("\n", "")
+    #Use Try and except to handle errors
+    #if user didn't provide an integer
+    try:
+        age = int(spinbox.get())
+    except ValueError:
+        age = 0
 
-    age = spinbox.get()
-
-    semester = scale.get()
+    try:
+        semester = int(scale.get())
+    except ValueError:
+        semester = 0
 
     paid_application_fee = yes_or_no
 
@@ -141,6 +177,7 @@ def action():
     data_frame = pandas.DataFrame([student_info])
     print(data_frame)
     data_frame.to_csv("applicants_information.csv")
+
 
 #calls action() when pressed
 button = Button(text="Submit", command=action)
