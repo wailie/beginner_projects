@@ -13,20 +13,23 @@ def search():
     def search_error():
         messagebox.showerror(title="ERROR", message="No Data is found.")
 
-    with open("data.json", mode="r") as data_file:
-        data = json.load(data_file)
-        
-    website_name = website_input.get()
-    try:
-        email = data[website_name]["email"]
-        password = data[website_name]["password"]
-    except KeyError:
-        search_error()
+    def file_error():
+        messagebox.showerror(title="FileNotFound", message="No Data File is found.")
 
-    for website in data:
-        if website_name == website:
+    try:
+        website_name = website_input.get()
+        with open("data.json", mode="r") as data_file:
+            data = json.load(data_file)
+    except FileNotFoundError:
+        file_error()
+    else:
+        if website_name in data:
+            email = data[website_name]["email"]
+            password = data[website_name]["password"]
             reminder()
-            
+        else:
+            search_error()
+         
     
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
 def generate_password():
